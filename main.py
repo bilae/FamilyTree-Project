@@ -9,11 +9,11 @@ def construire_mapping(personnes):
     """Retourne un dictionnaire avec pour clés les noms des personnes et pour
     valeurs les noms de leurs enfants sur base de la liste de dictionnaires
     "personnes"."""
-    dico = {}
+    mapping = {}
     for i in range(len(personnes)):
-        dico[personnes[i]["nom"]] = personnes[i]["enfants"]
-    return dico
+        mapping[personnes[i]["nom"]] = personnes[i]["enfants"]
+    return mapping
 
 
 
-dico = construire_mapping(lire_fichier())
+mapping = construire_mapping(lire_fichier())
