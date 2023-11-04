@@ -10,7 +10,7 @@ def construire_mapping(personnes):
     valeurs les noms de leurs enfants sur base de la liste de dictionnaires
     "personnes"."""
     dico = {}
-    for i in len(personnes):
+    for i in range(len(personnes)):
         dico[personnes[i]["nom"]] = personnes[i]["enfants"]
     return dico
 
