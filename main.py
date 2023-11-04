@@ -60,4 +60,3 @@ def trier_par_selection(personnes, nb_desc_ou_gen):
         personnes.sort(key=lambda x: x.get("name"))
         personnes.sort(key=lambda x: x.get("générations"), reverse = True)
 
-mapping = construire_mapping(lire_fichier())
