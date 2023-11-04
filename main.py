@@ -14,6 +14,15 @@ def construire_mapping(personnes):
         mapping[personnes[i]["nom"]] = personnes[i]["enfants"]
     return mapping
 
-
+def trier_par_selection(personnes, nb_desc_ou_gen):
+    """Trie personnes par nombre de descendants quand nb_desc_ou_gen vaut
+    True sinon trie par nombre de générations (et trie par ordre alphabétique
+    les personnes dont générations ou total_descendants est pareil)."""
+    if nb_desc_ou_gen:
+        personnes.sort(key=lambda x: x.get("name"))
+        personnes.sort(key=lambda x : x.get("total_descendants"), reverse = True)
+    else:
+        personnes.sort(key=lambda x: x.get("name"))
+        personnes.sort(key=lambda x: x.get("générations"), reverse = True)
 
 mapping = construire_mapping(lire_fichier())
