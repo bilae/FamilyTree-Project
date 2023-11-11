@@ -174,7 +174,7 @@ def arbre():
     turtle.speed(1000)
     turtle.up()
 
-    for i in range(trouve_prof_max(tri_par_desc)+1):  # Imprime les noms aux bons endroits et retient leurs coordonnées
+    for i in range(trouve_prof_max(tri_par_desc)+2):  # Imprime les noms aux bons endroits et retient leurs coordonnées
         coordx = 20
         coordy = i * 75
         for dico in tri_par_desc:
