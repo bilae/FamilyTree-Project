@@ -66,10 +66,7 @@ def trouver_generation(personne, mapping, cache_generation):
 
 
 def compter_descendants_et_profondeur(nom, mapping, cache_compte={}, cache_profondeur={}, cache_generation={}):
-
-    """Fonction qui permet de calculer les descendants ainsi que la pronfondeur des différents éléments du fichier
-    lûs grâce à la fonction lire_fichier."""
-
+    """Fonction qui permet de calculer les descendants ainsi que la pronfondeur des différents éléments du fichier lûs grâce à la fonction lire_fichier"""
     total_descendants = 0 # Initalisation
     generations = 0  # Initialise la profondeur à zéro, puisqu'elle sera calculée correctement
 
@@ -81,9 +78,9 @@ def compter_descendants_et_profondeur(nom, mapping, cache_compte={}, cache_profo
 
     cache_compte[nom] = total_descendants
     cache_profondeur[nom] = generations
-    cache_generation[nom] = trouver_generation(nom, mapping, cache_compte, cache_profondeur, cache_generation)
 
-    return {"nom": nom, "total_descendants": total_descendants, "generations": generations, "generation": cache_generation[nom]}
+    return {"nom": nom, "total_descendants": total_descendants, "generations": generations}
+
 
 
 def trier_par_selection(personnes, nb_desc_ou_gen):
