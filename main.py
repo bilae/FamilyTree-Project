@@ -41,6 +41,34 @@ def construire_mapping(personnes):
     return mapping
 
 
+def compter_descendants_et_profondeur(nom, mapping, cache_compte={}, cache_profondeur={}, cache_generation={}):
+    """Fonction qui permet de calculer les descendants ainsi que la pronfondeur des différents éléments du fichier lûs grâce à la fonction lire_fichier"""
+    total_descendants = 0 # Initalisation
+    generations = 0  # Initialise la profondeur à zéro, puisqu'elle sera calculée correctement
+
+    if nom in mapping:
+        for enfant in mapping[nom]:
+            result = compter_descendants_et_profondeur(enfant, mapping, cache_compte, cache_profondeur)
+            total_descendants += 1 + result["total_descendants"]
+            generations = max(generations, 1 + result["generations"])
+
+    cache_compte[nom] = total_descendants
+    cache_profondeur[nom] = generations
+
+    return {"nom": nom, "total_descendants": total_descendants, "generations": generations}
+
+
+def trouve_prof_max(tri_par_desc):
+
+    """Trouve prof_max dans tri_par_desc. Ceci est utilisé dans la fonction qui construit l'arbre généalogique."""
+
+    prof_max = 0
+    for p in tri_par_desc:
+        if p["generation"] > prof_max:
+            prof_max = p["generation"]
+    return prof_max
+
+
 def trouver_generation(personne, mapping, cache_generation):
     """Calcul la génération de la personne par rapport à ses parents, grands-parents etc"""
     max_ancetre_generation = 0 # Initialisation
@@ -63,24 +91,6 @@ def trouver_generation(personne, mapping, cache_generation):
                                 if mapping[personne][0] in mapping[personne1] and personne != personne1:
                                     cache_generation[personne] = trouver_generation(personne1, mapping, cache_generation)
                                     return cache_generation[personne]
-
-
-def compter_descendants_et_profondeur(nom, mapping, cache_compte={}, cache_profondeur={}, cache_generation={}):
-    """Fonction qui permet de calculer les descendants ainsi que la pronfondeur des différents éléments du fichier lûs grâce à la fonction lire_fichier"""
-    total_descendants = 0 # Initalisation
-    generations = 0  # Initialise la profondeur à zéro, puisqu'elle sera calculée correctement
-
-    if nom in mapping:
-        for enfant in mapping[nom]:
-            result = compter_descendants_et_profondeur(enfant, mapping, cache_compte, cache_profondeur)
-            total_descendants += 1 + result["total_descendants"]
-            generations = max(generations, 1 + result["generations"])
-
-    cache_compte[nom] = total_descendants
-    cache_profondeur[nom] = generations
-
-    return {"nom": nom, "total_descendants": total_descendants, "generations": generations}
-
 
 
 def trier_par_selection(personnes, nb_desc_ou_gen):
@@ -197,17 +207,6 @@ def arbre():
             turtle.up()
 
 
-def trouve_prof_max(tri_par_desc):
-
-    """Trouve prof_max dans tri_par_desc. Ceci est utilisé dans la fonction qui construit l'arbre généalogique."""
-
-    prof_max = 0
-    for p in tri_par_desc:
-        if p["generation"] > prof_max:
-            prof_max = p["generation"]
-    return prof_max
-
-
 # Charge le fichier JSON
 data = lire_fichier("chemin_du_fichier.json")
 
@@ -223,6 +222,9 @@ for nom in mapping.keys():
 # Sauvegarde les résultats dans un fichier JSON
 with open("resultats.json", "w") as fichier_sortie:
     json.dump(resultats, fichier_sortie, indent=4)
+
+for dico in resultats:
+    dico["generation"] = trouver_generation(dico["nom"], mapping, cache_generation={})
 
 # Crée la fenêtre de l'application
 window = Tk()
