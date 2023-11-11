@@ -64,8 +64,8 @@ def trouve_prof_max(tri_par_desc):
 
     prof_max = 0
     for p in tri_par_desc:
-        if p["generation"] > prof_max:
-            prof_max = p["generation"]
+        if p["generations"] > prof_max:
+            prof_max = p["generations"]
     return prof_max
 
 
