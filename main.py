@@ -49,7 +49,7 @@ def compter_descendants_et_profondeur(nom, mapping, cache_compte={}, cache_profo
     generations = 0  # Initialise la profondeur à zéro, puisqu'elle sera calculée correctement
 
     if nom in mapping:
-        for enfant in mapping[nom]:
+        for enfant in mapping[nom]: # Applique la fonction pour l'enfant
             result = compter_descendants_et_profondeur(enfant, mapping, cache_compte, cache_profondeur)
             total_descendants += 1 + result["total_descendants"]
             generations = max(generations, 1 + result["generations"])
@@ -77,6 +77,19 @@ def trouver_generation(personne, mapping, cache_generation):
     
     max_ancetre_generation = 0 # Initialisation
     
+    for parent, enfants in mapping.items(): 
+        if personne in enfants: # Vérifie si la personne est l'enfant de quelqu'un
+            ancetre_generation = trouver_generation(parent, mapping, cache_generation) # Applique la fonction pour le parent de la personne
+            max_ancetre_generation = max(max_ancetre_generation, ancetre_generation)
+            cache_generation[personne] = max_ancetre_generation + 1
+            return cache_generation[personne]
+    for parent, enfants in mapping.items(): 
+        if personne not in enfants: # Vérifie si l'enfant n'a pas de parents
+            for dico in resultats:
+                if dico["nom"] == personne:
+                    if dico["generations"] == trouve_prof_max(resultats): # Si la personne est la source de l'arbre généalogique
+
+    
     for parent, enfants in mapping.items():
         if personne in enfants:
             ancetre_generation = trouver_generation(parent, mapping, cache_generation)
@@ -90,14 +103,15 @@ def trouver_generation(personne, mapping, cache_generation):
                 if dico["nom"] == personne:
                     
                     if dico["generations"] == trouve_prof_max(resultats):
+
                         cache_generation[personne] = 1
                         return cache_generation[personne]
                         
                     else:
                         for personne1 in mapping.keys():
-                            if mapping[personne] != []:
-                                if mapping[personne][0] in mapping[personne1] and personne != personne1:
-                                    cache_generation[personne] = trouver_generation(personne1, mapping, cache_generation)
+                            if mapping[personne] != []: # Vérifie si la personne a des enfants
+                                if mapping[personne][0] in mapping[personne1] and personne != personne1: # On cherche le 2e parent de l'enfant
+                                    cache_generation[personne] = trouver_generation(personne1, mapping, cache_generation) # On prend la génération du 2e parent
                                     return cache_generation[personne]
 
 
