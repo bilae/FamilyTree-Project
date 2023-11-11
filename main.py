@@ -79,7 +79,7 @@ def trier_par_selection(personnes, nb_desc_ou_gen):
             x = personnes[i]
             y = i
             for j in range(i+1, len(personnes)):
-                if x["générations"] < personnes[j]["générations"] or (x["générations"] == personnes[j]["générations"] and x["name"] > personnes[j]["name"]):
+                if x["generations"] < personnes[j]["generations"] or (x["generations"] == personnes[j]["generations"] and x["name"] > personnes[j]["name"]):
                     x = personnes[j]
                     y = j
             personnes[i], personnes[y] = x, personnes[i]
@@ -89,7 +89,7 @@ def liste_desc():
     frame.destroy()
     spawn_buttons()
     for dico in tri_par_desc:
-        label1 = Label(frame, text=(str(dico["name"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["générations"]) + " générations."))
+        label1 = Label(frame, text=(str(dico["name"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["generations"]) + " générations."))
         label1.pack(side=TOP)
 
 
@@ -98,7 +98,7 @@ def liste_gen():
     frame.destroy()
     spawn_buttons()
     for dico in tri_par_gen:
-        label2 = Label(frame, text=(str(dico["name"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["générations"]) + " générations."))
+        label2 = Label(frame, text=(str(dico["name"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["generations"]) + " générations."))
         label2.pack(side=TOP)
 
 def arbre(): #TODO: lignes
@@ -113,7 +113,7 @@ def arbre(): #TODO: lignes
         coordx = 20
         coordy = i * 75
         for dico in tri_par_desc:
-            if dico["profondeur"] == i:
+            if dico["generation"] == i:
                 Label(frame, text=str(dico["name"])).place(x=coordx, y=coordy)
                 dico_coord[dico["name"]] = coordx, coordy
                 coordx += 100
@@ -128,8 +128,8 @@ def trouve_prof_max(tri_par_desc):
     """Trouve prof_max dans tri_par_desc"""
     prof_max = 0
     for p in tri_par_desc:
-        if p["profondeur"] > prof_max:
-            prof_max = p["profondeur"]
+        if p["generation"] > prof_max:
+            prof_max = p["generation"]
     return prof_max
 
 def spawn_buttons():
