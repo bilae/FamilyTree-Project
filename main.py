@@ -54,9 +54,21 @@ def trier_par_selection(personnes, nb_desc_ou_gen):
     True sinon trie par nombre de générations (et trie par ordre alphabétique
     les personnes dont générations ou total_descendants est pareil)."""
     if nb_desc_ou_gen:
-        personnes.sort(key=lambda x: x.get("name"))
-        personnes.sort(key=lambda x : x.get("total_descendants"), reverse = True)
+        for i in range(len(personnes)):
+            x = personnes[i]
+            y = i
+            for j in range(i+1, len(personnes)):
+                if x["total_descendants"] < personnes[j]["total_descendants"] or (x["total_descendants"] == personnes[j]["total_descendants"] and x["name"] > personnes[j]["name"]):
+                    x = personnes[j]
+                    y = j
+            personnes[i], personnes[y] = x, personnes[i]
     else:
-        personnes.sort(key=lambda x: x.get("name"))
-        personnes.sort(key=lambda x: x.get("générations"), reverse = True)
+        for i in range(len(personnes)):
+            x = personnes[i]
+            y = i
+            for j in range(i+1, len(personnes)):
+                if x["générations"] < personnes[j]["générations"] or (x["générations"] == personnes[j]["générations"] and x["name"] > personnes[j]["name"]):
+                    x = personnes[j]
+                    y = j
+            personnes[i], personnes[y] = x, personnes[i]
 
