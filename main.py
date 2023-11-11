@@ -76,6 +76,7 @@ def trouver_generation(personne, mapping, cache_generation):
     """Calcul la génération de la personne par rapport à ses parents, grands-parents etc"""
     
     max_ancetre_generation = 0 # Initialisation
+    
     for parent, enfants in mapping.items(): 
         if personne in enfants: # Vérifie si la personne est l'enfant de quelqu'un
             ancetre_generation = trouver_generation(parent, mapping, cache_generation) # Applique la fonction pour le parent de la personne
@@ -87,8 +88,25 @@ def trouver_generation(personne, mapping, cache_generation):
             for dico in resultats:
                 if dico["nom"] == personne:
                     if dico["generations"] == trouve_prof_max(resultats): # Si la personne est la source de l'arbre généalogique
+
+    
+    for parent, enfants in mapping.items():
+        if personne in enfants:
+            ancetre_generation = trouver_generation(parent, mapping, cache_generation)
+            max_ancetre_generation = max(max_ancetre_generation, ancetre_generation)
+            cache_generation[personne] = max_ancetre_generation + 1
+            return cache_generation[personne]
+            
+    for parent, enfants in mapping.items():    
+        if personne not in enfants:
+            for dico in resultats:
+                if dico["nom"] == personne:
+                    
+                    if dico["generations"] == trouve_prof_max(resultats):
+
                         cache_generation[personne] = 1
                         return cache_generation[personne]
+                        
                     else:
                         for personne1 in mapping.keys():
                             if mapping[personne] != []: # Vérifie si la personne a des enfants
