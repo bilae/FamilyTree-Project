@@ -1,4 +1,6 @@
 import json
+from tkinter import *
+from turtle import RawTurtle
 
 def lire_fichier(chemin_du_fichier):
     """Extrait et retourne le contenu du fichier json "chemin_du_fichier"."""
@@ -72,3 +74,76 @@ def trier_par_selection(personnes, nb_desc_ou_gen):
                     y = j
             personnes[i], personnes[y] = x, personnes[i]
 
+def liste_desc():
+    """Imprime la liste tri_par_desc établit dans le programme général sous forme de phrases."""
+    frame.destroy()
+    spawn_buttons()
+    for dico in tri_par_desc:
+        label1 = Label(frame, text=(str(dico["name"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["générations"]) + " générations."))
+        label1.pack(side=TOP)
+
+
+def liste_gen():
+    """Imprime la liste tri_par_gen établit dans le programme général sous forme de phrases."""
+    frame.destroy()
+    spawn_buttons()
+    for dico in tri_par_gen:
+        label2 = Label(frame, text=(str(dico["name"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["générations"]) + " générations."))
+        label2.pack(side=TOP)
+
+def arbre(): #TODO: lignes
+    frame.destroy()
+    spawn_buttons()
+    dico_coord = {}
+    turtle = RawTurtle(frame)
+    turtle.hideturtle()
+    turtle.speed(500)
+    turtle.up()
+    for i in range(trouve_prof_max(tri_par_desc)+1):
+        coordx = 20
+        coordy = i * 75
+        for dico in tri_par_desc:
+            if dico["profondeur"] == i:
+                Label(frame, text=str(dico["name"])).place(x=coordx, y=coordy)
+                dico_coord[dico["name"]] = coordx, coordy
+                coordx += 100
+    for nom in mapping.keys():
+        for nom_enfant in mapping[nom]:
+            turtle.setpos(dico_coord[nom][0]-300+25, -dico_coord[nom][1]+400-25)
+            turtle.down()
+            turtle.goto(dico_coord[nom_enfant][0]-300+25, -dico_coord[nom_enfant][1]+400)
+            turtle.up()
+
+def trouve_prof_max(tri_par_desc):
+    """Trouve prof_max dans tri_par_desc"""
+    prof_max = 0
+    for p in tri_par_desc:
+        if p["profondeur"] > prof_max:
+            prof_max = p["profondeur"]
+    return prof_max
+
+def spawn_buttons():
+    global frame
+    frame = Canvas(window, height=800, width=600)
+    frame.pack()
+    button = Button(window, text="Tri par descendants", command=liste_desc, font=("Arial", 15))
+    button.place(x=42.5, y=750)  # largeur=190
+
+    button = Button(window, text="Tri par génération", command=liste_gen, font=("Arial", 15))
+    button.place(x=275, y=750)  # largeur=172
+
+    button = Button(window, text="Arbre", command=arbre, font=("Arial", 15))
+    button.place(x=489.5, y=750)  # largeur=68
+
+# crée la fenêtre de l'application
+window = Tk()
+window.geometry('600x800+500+50')
+
+# crée les listes de dictionnaires triées
+tri_par_desc = trier_par_selection(resultats, True)
+tri_par_gen = trier_par_selection(resultats, False)
+
+# crée les boutons qui appellent les différentes fonctions
+spawn_buttons()
+
+window.mainloop()
