@@ -83,27 +83,12 @@ def trouver_generation(personne, mapping, cache_generation):
             max_ancetre_generation = max(max_ancetre_generation, ancetre_generation)
             cache_generation[personne] = max_ancetre_generation + 1
             return cache_generation[personne]
+            
     for parent, enfants in mapping.items(): 
         if personne not in enfants: # Vérifie si l'enfant n'a pas de parents
             for dico in resultats:
                 if dico["nom"] == personne:
                     if dico["generations"] == trouve_prof_max(resultats): # Si la personne est la source de l'arbre généalogique
-
-    
-    for parent, enfants in mapping.items():
-        if personne in enfants:
-            ancetre_generation = trouver_generation(parent, mapping, cache_generation)
-            max_ancetre_generation = max(max_ancetre_generation, ancetre_generation)
-            cache_generation[personne] = max_ancetre_generation + 1
-            return cache_generation[personne]
-            
-    for parent, enfants in mapping.items():    
-        if personne not in enfants:
-            for dico in resultats:
-                if dico["nom"] == personne:
-                    
-                    if dico["generations"] == trouve_prof_max(resultats):
-
                         cache_generation[personne] = 1
                         return cache_generation[personne]
                         
