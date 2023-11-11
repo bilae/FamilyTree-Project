@@ -1,3 +1,7 @@
+"""
+Auteurs: Bilal El Aisati et Midas Opsomer
+Date: 11/11/2023
+"""
 import json
 from tkinter import *
 from turtle import RawTurtle
@@ -16,6 +20,10 @@ def construire_mapping(personnes):
         nom = personne["nom"]
         enfants = personne.get("enfants", [])
         mapping[nom] = enfants
+    for personne in personnes:
+        for personne2 in personne["enfants"]:
+            if personne2 not in mapping.keys():
+                mapping[personne2] = []
     return mapping
 
 # Charge le fichier JSON
@@ -70,7 +78,7 @@ def trier_par_selection(personnes, nb_desc_ou_gen):
             x = personnes[i]
             y = i
             for j in range(i+1, len(personnes)):
-                if x["total_descendants"] < personnes[j]["total_descendants"] or (x["total_descendants"] == personnes[j]["total_descendants"] and x["name"] > personnes[j]["name"]):
+                if x["total_descendants"] < personnes[j]["total_descendants"] or (x["total_descendants"] == personnes[j]["total_descendants"] and x["nom"] > personnes[j]["nom"]):
                     x = personnes[j]
                     y = j
             personnes[i], personnes[y] = x, personnes[i]
@@ -79,7 +87,7 @@ def trier_par_selection(personnes, nb_desc_ou_gen):
             x = personnes[i]
             y = i
             for j in range(i+1, len(personnes)):
-                if x["generations"] < personnes[j]["generations"] or (x["generations"] == personnes[j]["generations"] and x["name"] > personnes[j]["name"]):
+                if x["generations"] < personnes[j]["generations"] or (x["generations"] == personnes[j]["generations"] and x["nom"] > personnes[j]["nom"]):
                     x = personnes[j]
                     y = j
             personnes[i], personnes[y] = x, personnes[i]
@@ -88,8 +96,9 @@ def liste_desc():
     """Imprime la liste tri_par_desc établit dans le programme général sous forme de phrases."""
     frame.destroy()
     spawn_buttons()
+    trier_par_selection(resultats, True)
     for dico in tri_par_desc:
-        label1 = Label(frame, text=(str(dico["name"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["generations"]) + " générations."))
+        label1 = Label(frame, text=(str(dico["nom"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["generations"]) + " générations."))
         label1.pack(side=TOP)
 
 
@@ -97,8 +106,9 @@ def liste_gen():
     """Imprime la liste tri_par_gen établit dans le programme général sous forme de phrases."""
     frame.destroy()
     spawn_buttons()
+    trier_par_selection(resultats, False)
     for dico in tri_par_gen:
-        label2 = Label(frame, text=(str(dico["name"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["generations"]) + " générations."))
+        label2 = Label(frame, text=(str(dico["nom"]) + " a " + str(dico["total_descendants"]) + " descendants sur " + str(dico["generations"]) + " générations."))
         label2.pack(side=TOP)
 
 def arbre(): #TODO: lignes
@@ -114,8 +124,8 @@ def arbre(): #TODO: lignes
         coordy = i * 75
         for dico in tri_par_desc:
             if dico["generation"] == i:
-                Label(frame, text=str(dico["name"])).place(x=coordx, y=coordy)
-                dico_coord[dico["name"]] = coordx, coordy
+                Label(frame, text=str(dico["nom"])).place(x=coordx, y=coordy)
+                dico_coord[dico["nom"]] = coordx, coordy
                 coordx += 100
     for nom in mapping.keys():
         for nom_enfant in mapping[nom]:
@@ -150,8 +160,8 @@ window = Tk()
 window.geometry('600x800+500+50')
 
 # crée les listes de dictionnaires triées
-tri_par_desc = trier_par_selection(resultats, True)
-tri_par_gen = trier_par_selection(resultats, False)
+tri_par_desc = resultats
+tri_par_gen = resultats
 
 # crée les boutons qui appellent les différentes fonctions
 spawn_buttons()
