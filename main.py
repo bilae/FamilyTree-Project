@@ -24,22 +24,32 @@ data = lire_fichier("chemin_du_fichier.json")
 # Construit le mapping
 mapping = construire_mapping(data)
 
-def compter_descendants_et_profondeur(nom, mapping, cache_compte={}, cache_profondeur={}, generation_courante=1):
+def trouver_generation(personne, mapping, cache_compte, cache_profondeur, cache_generation):
+    """Calcul la génération de la personne par rapport à ses parents, grands-parents etc"""
+    max_ancetre_generation = 0 # Initialisation
+    for parent, enfants in mapping.items():
+        if personne in enfants:
+            ancetre_generation = trouver_generation(parent, mapping, cache_compte, cache_profondeur, cache_generation)
+            max_ancetre_generation = max(max_ancetre_generation, ancetre_generation)
+        cache_generation[personne] = max_ancetre_generation + 1
+    return cache_generation[personne]
 
-    total_descendants = 0
-    profondeur = generation_courante
+def compter_descendants_et_profondeur(nom, mapping, cache_compte={}, cache_profondeur={}, cache_generation={}):
+    """Fonction qui permet de calculer les descendants ainsi que la pronfondeur des différents éléments du fichier lûs grâce à la fonction lire_fichier"""
+    total_descendants = 0 # Initalisation
+    generations = 0  # Initialise la profondeur à zéro, puisqu'elle sera calculée correctement
 
-    for enfant in mapping.get(nom, []):
-        result = compter_descendants_et_profondeur(enfant, mapping, cache_compte, cache_profondeur, generation_courante + 1)
-        total_descendants += 1 + result["total_descendants"]
-        if result["generations"] > profondeur:
-            profondeur = result["generations"]
+    if nom in mapping:
+        for enfant in mapping[nom]:
+            result = compter_descendants_et_profondeur(enfant, mapping, cache_compte, cache_profondeur)
+            total_descendants += 1 + result["total_descendants"]
+            generations = max(generations, 1 + result["generations"])
 
     cache_compte[nom] = total_descendants
-    cache_profondeur[nom] = profondeur
+    cache_profondeur[nom] = generations
+    cache_generation[nom] = trouver_generation(nom, mapping, cache_compte, cache_profondeur, cache_generation)
 
-    return {"nom": nom, "total_descendants": total_descendants, "generations": profondeur}
-
+    return {"nom": nom, "total_descendants": total_descendants, "generations": generations, "generation": cache_generation[nom]}
 # Liste de résultats
 resultats = []
 
