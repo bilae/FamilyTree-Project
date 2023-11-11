@@ -42,7 +42,9 @@ def construire_mapping(personnes):
 
 
 def compter_descendants_et_profondeur(nom, mapping, cache_compte={}, cache_profondeur={}, cache_generation={}):
+    
     """Fonction qui permet de calculer les descendants ainsi que la pronfondeur des différents éléments du fichier lûs grâce à la fonction lire_fichier"""
+    
     total_descendants = 0 # Initalisation
     generations = 0  # Initialise la profondeur à zéro, puisqu'elle sera calculée correctement
 
@@ -70,7 +72,9 @@ def trouve_prof_max(tri_par_desc):
 
 
 def trouver_generation(personne, mapping, cache_generation):
+    
     """Calcul la génération de la personne par rapport à ses parents, grands-parents etc"""
+    
     max_ancetre_generation = 0 # Initialisation
     for parent, enfants in mapping.items():
         if personne in enfants:
